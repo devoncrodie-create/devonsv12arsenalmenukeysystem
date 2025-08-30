@@ -20,76 +20,127 @@ local MenuState = {
 }
 
 --// GUI
-local ScreenGui = Instance.new("ScreenGui", player:WaitForChild("PlayerGui"))
+local player = game.Players.LocalPlayer
+local ScreenGui = Instance.new("ScreenGui")
 ScreenGui.Name = "DevonsArsenalMenu"
+ScreenGui.ResetOnSpawn = false
+ScreenGui.Parent = player:WaitForChild("PlayerGui")
 
 -- Main Frame
 local MainFrame = Instance.new("Frame")
 MainFrame.Size = UDim2.new(0, 460, 0, 650)
 MainFrame.Position = UDim2.new(0.5, -230, 0.5, -325)
-MainFrame.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+MainFrame.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
 MainFrame.BorderSizePixel = 0
 MainFrame.Active = true
 MainFrame.Parent = ScreenGui
 
-local UICornerMain = Instance.new("UICorner")
-UICornerMain.CornerRadius = UDim.new(0, 16)
-UICornerMain.Parent = MainFrame
+local MainCorner = Instance.new("UICorner")
+MainCorner.CornerRadius = UDim.new(0, 20)
+MainCorner.Parent = MainFrame
 
--- Shadow for MainFrame
+-- Drop Shadow
 local Shadow = Instance.new("Frame")
-Shadow.Size = UDim2.new(1, 10, 1, 10)
-Shadow.Position = UDim2.new(0, -5, 0, -5)
-Shadow.BackgroundColor3 = Color3.fromRGB(0,0,0)
-Shadow.BackgroundTransparency = 0.8
+Shadow.Size = UDim2.new(1, 20, 1, 20)
+Shadow.Position = UDim2.new(0, -10, 0, -10)
+Shadow.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+Shadow.BackgroundTransparency = 0.85
 Shadow.BorderSizePixel = 0
 Shadow.ZIndex = 0
 Shadow.Parent = MainFrame
 
-local UICornerShadow = Instance.new("UICorner")
-UICornerShadow.CornerRadius = UICornerMain.CornerRadius
-UICornerShadow.Parent = Shadow
+local ShadowCorner = Instance.new("UICorner")
+ShadowCorner.CornerRadius = MainCorner.CornerRadius
+ShadowCorner.Parent = Shadow
 
 -- Header
 local Header = Instance.new("Frame")
-Header.Size = UDim2.new(1, 0, 0, 60)
+Header.Size = UDim2.new(1, 0, 0, 70)
 Header.Position = UDim2.new(0, 0, 0, 0)
-Header.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+Header.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
 Header.BorderSizePixel = 0
 Header.Parent = MainFrame
 
-local UICornerHeader = Instance.new("UICorner")
-UICornerHeader.CornerRadius = UDim.new(0, 16)
-UICornerHeader.Parent = Header
+local HeaderCorner = Instance.new("UICorner")
+HeaderCorner.CornerRadius = UDim.new(0, 20)
+HeaderCorner.Parent = Header
 
--- Gradient for header
+-- Header Gradient
 local HeaderGradient = Instance.new("UIGradient")
 HeaderGradient.Color = ColorSequence.new{
-    ColorSequenceKeypoint.new(0, Color3.fromRGB(60,60,60)),
-    ColorSequenceKeypoint.new(1, Color3.fromRGB(45,45,45))
+    ColorSequenceKeypoint.new(0, Color3.fromRGB(80, 80, 80)),
+    ColorSequenceKeypoint.new(1, Color3.fromRGB(50, 50, 50))
 }
 HeaderGradient.Rotation = 90
 HeaderGradient.Parent = Header
 
 -- Header Text
 local HeaderLabel = Instance.new("TextLabel")
-HeaderLabel.Size = UDim2.new(1, -60, 1, 0)
-HeaderLabel.Position = UDim2.new(0, 10, 0, 0)
+HeaderLabel.Size = UDim2.new(1, -70, 1, 0)
+HeaderLabel.Position = UDim2.new(0, 20, 0, 0)
 HeaderLabel.BackgroundTransparency = 1
 HeaderLabel.Text = "Devons Arsenal Menu (v16)"
 HeaderLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
 HeaderLabel.Font = Enum.Font.GothamBold
-HeaderLabel.TextSize = 26
+HeaderLabel.TextSize = 28
 HeaderLabel.TextXAlignment = Enum.TextXAlignment.Left
 HeaderLabel.Parent = Header
 
 -- Header Image
 local HeaderImage = Instance.new("ImageLabel")
-HeaderImage.Size = UDim2.new(0, 40, 0, 40)
-HeaderImage.Position = UDim2.new(1, -50, 0, 10)
+HeaderImage.Size = UDim2.new(0, 50, 0, 50)
+HeaderImage.Position = UDim2.new(1, -60, 0, 10)
 HeaderImage.BackgroundTransparency = 1
 HeaderImage.Image = "rbxassetid://101455013322456"
 HeaderImage.Parent = Header
+
+-- Content Frame
+local ContentFrame = Instance.new("Frame")
+ContentFrame.Size = UDim2.new(1, -40, 1, -90)
+ContentFrame.Position = UDim2.new(0, 20, 0, 80)
+ContentFrame.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
+ContentFrame.BorderSizePixel = 0
+ContentFrame.Parent = MainFrame
+
+local ContentCorner = Instance.new("UICorner")
+ContentCorner.CornerRadius = UDim.new(0, 15)
+ContentCorner.Parent = ContentFrame
+
+-- Content Gradient
+local ContentGradient = Instance.new("UIGradient")
+ContentGradient.Color = ColorSequence.new{
+    ColorSequenceKeypoint.new(0, Color3.fromRGB(40, 40, 40)),
+    ColorSequenceKeypoint.new(1, Color3.fromRGB(30, 30, 30))
+}
+ContentGradient.Rotation = 90
+ContentGradient.Parent = ContentFrame
+
+-- Subtle Hover Animation Function
+local function addHoverEffect(frame)
+    frame.MouseEnter:Connect(function()
+        frame:TweenSize(UDim2.new(frame.Size.X.Scale, frame.Size.X.Offset + 10, frame.Size.Y.Scale, frame.Size.Y.Offset + 10), Enum.EasingDirection.Out, Enum.EasingStyle.Quad, 0.15, true)
+    end)
+    frame.MouseLeave:Connect(function()
+        frame:TweenSize(UDim2.new(frame.Size.X.Scale, frame.Size.X.Offset - 10, frame.Size.Y.Scale, frame.Size.Y.Offset - 10), Enum.EasingDirection.Out, Enum.EasingStyle.Quad, 0.15, true)
+    end)
+end
+
+-- Example Button
+local Button = Instance.new("TextButton")
+Button.Size = UDim2.new(0, 200, 0, 50)
+Button.Position = UDim2.new(0.5, -100, 0.5, -25)
+Button.BackgroundColor3 = Color3.fromRGB(70, 70, 70)
+Button.TextColor3 = Color3.fromRGB(255, 255, 255)
+Button.Font = Enum.Font.GothamBold
+Button.TextSize = 22
+Button.Text = "Example Button"
+Button.Parent = ContentFrame
+
+local ButtonCorner = Instance.new("UICorner")
+ButtonCorner.CornerRadius = UDim.new(0, 12)
+ButtonCorner.Parent = Button
+
+addHoverEffect(Button)
 
 --// Simple Key System
 local keyGui = Instance.new("ScreenGui", player.PlayerGui)
