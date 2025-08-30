@@ -19,14 +19,15 @@ local MenuState = {
     aimbotPart = "Head"
 }
 
---// Key System
+--// Key GUI
 local keyGui = Instance.new("ScreenGui", player.PlayerGui)
 keyGui.Name = "KeySystem"
 
 local keyFrame = Instance.new("Frame")
 keyFrame.Size = UDim2.new(0,400,0,200)
 keyFrame.Position = UDim2.new(0.5,-200,0.5,-100)
-keyFrame.BackgroundColor3 = Color3.fromRGB(40,40,40)
+keyFrame.BackgroundColor3 = Color3.fromRGB(30,30,30)
+keyFrame.BorderSizePixel = 0
 keyFrame.Parent = keyGui
 
 local UICornerKF = Instance.new("UICorner")
@@ -37,7 +38,7 @@ local keyLabel = Instance.new("TextLabel")
 keyLabel.Size = UDim2.new(1,0,0,50)
 keyLabel.Position = UDim2.new(0,0,0,10)
 keyLabel.Text = "Enter Key to Access Menu"
-keyLabel.TextColor3 = Color3.fromRGB(255,255,255)
+keyLabel.TextColor3 = Color3.fromRGB(255,165,0)
 keyLabel.Font = Enum.Font.GothamBold
 keyLabel.TextSize = 24
 keyLabel.BackgroundTransparency = 1
@@ -60,318 +61,325 @@ enterButton.Size = UDim2.new(0.5,0,0,40)
 enterButton.Position = UDim2.new(0.25,0,0,140)
 enterButton.Text = "Enter"
 enterButton.TextColor3 = Color3.fromRGB(255,255,255)
-enterButton.BackgroundColor3 = Color3.fromRGB(0,150,0)
+enterButton.BackgroundColor3 = Color3.fromRGB(180,0,0)
 enterButton.Font = Enum.Font.GothamBold
 enterButton.TextSize = 22
 enterButton.Parent = keyFrame
 
+--// Load Menu
+local function loadMenu()
+    keyGui:Destroy()
+
+    local ScreenGui = Instance.new("ScreenGui", player:WaitForChild("PlayerGui"))
+    ScreenGui.Name = "DevonsArsenalMenu"
+
+    local MainFrame = Instance.new("Frame")
+    MainFrame.Size = UDim2.new(0,460,0,650)
+    MainFrame.Position = UDim2.new(0.5,-230,0.5,-325)
+    MainFrame.BackgroundColor3 = Color3.fromRGB(25,25,25)
+    MainFrame.BorderSizePixel = 0
+    MainFrame.Active = true
+    MainFrame.Parent = ScreenGui
+
+    local UICornerMain = Instance.new("UICorner")
+    UICornerMain.CornerRadius = UDim.new(0, 12)
+    UICornerMain.Parent = MainFrame
+
+    local Header = Instance.new("Frame")
+    Header.Size = UDim2.new(1,0,0,60)
+    Header.Position = UDim2.new(0,0,0,0)
+    Header.BackgroundColor3 = Color3.fromRGB(255,165,0)
+    Header.BorderSizePixel = 0
+    Header.Parent = MainFrame
+
+    local HeaderTitle = Instance.new("TextLabel")
+    HeaderTitle.Size = UDim2.new(1,0,1,0)
+    HeaderTitle.Position = UDim2.new(0,0,0,0)
+    HeaderTitle.BackgroundTransparency = 1
+    HeaderTitle.Text = "Devons Arsenal Menu (v16)"
+    HeaderTitle.TextColor3 = Color3.fromRGB(255,140,0)
+    HeaderTitle.Font = Enum.Font.GothamBold
+    HeaderTitle.TextSize = 26
+    HeaderTitle.Parent = Header
+
+    local HeaderImage = Instance.new("ImageLabel")
+    HeaderImage.Size = UDim2.new(0,40,0,40)
+    HeaderImage.Position = UDim2.new(1,-50,0,10)
+    HeaderImage.BackgroundTransparency = 1
+    HeaderImage.Image = "rbxassetid://101270819539963"
+    HeaderImage.Parent = Header
+
+    -- Buttons
+    local function createButton(name, yPos, stateKey)
+        local btn = Instance.new("TextButton")
+        btn.Size = UDim2.new(0.8,0,0,45)
+        btn.Position = UDim2.new(0.1,0,0,yPos)
+        btn.BackgroundColor3 = Color3.fromRGB(180,0,0)
+        btn.BorderSizePixel = 0
+        btn.Text = name
+        btn.TextColor3 = Color3.fromRGB(255,255,255)
+        btn.Font = Enum.Font.Gotham
+        btn.TextSize = 20
+        btn.Parent = MainFrame
+
+        local UICornerBtn = Instance.new("UICorner")
+        UICornerBtn.CornerRadius = UDim.new(0, 8)
+        UICornerBtn.Parent = btn
+
+        btn.MouseButton1Click:Connect(function()
+            MenuState[stateKey] = not MenuState[stateKey]
+            btn.BackgroundColor3 = MenuState[stateKey] and Color3.fromRGB(255,0,0) or Color3.fromRGB(180,0,0)
+        end)
+        return btn
+    end
+
+    createButton("Aimbot", 80, "aimbot")
+    createButton("ESP", 150, "esp")
+    createButton("Hitbox Extender", 220, "hitbox")
+    createButton("Kill All", 290, "killall")
+    createButton("Rapid Fire", 360, "rapidfire")
+    createButton("Show FOV", 430, "showFOV")
+
+    -- Head/Torso toggle
+    local PartToggle = Instance.new("TextButton")
+    PartToggle.Size = UDim2.new(0,60,0,30)
+    PartToggle.Position = UDim2.new(0.65,0,80/650,5)
+    PartToggle.BackgroundColor3 = Color3.fromRGB(255,140,0)
+    PartToggle.BorderSizePixel = 0
+    PartToggle.Text = MenuState.aimbotPart
+    PartToggle.TextColor3 = Color3.fromRGB(0,0,0)
+    PartToggle.Font = Enum.Font.Gotham
+    PartToggle.TextSize = 14
+    PartToggle.Parent = MainFrame
+
+    PartToggle.MouseButton1Click:Connect(function()
+        MenuState.aimbotPart = (MenuState.aimbotPart == "Head") and "Torso" or "Head"
+        PartToggle.Text = MenuState.aimbotPart
+    end)
+
+    -- Sliders
+    local function createSlider(name, yPos, min, max, stateRef)
+        local SliderLabel = Instance.new("TextLabel")
+        SliderLabel.Size = UDim2.new(0.8,0,0,25)
+        SliderLabel.Position = UDim2.new(0.1,0,0,yPos)
+        SliderLabel.BackgroundTransparency = 1
+        SliderLabel.Text = name..": "..stateRef[1]
+        SliderLabel.TextColor3 = Color3.fromRGB(255,165,0)
+        SliderLabel.Font = Enum.Font.Gotham
+        SliderLabel.TextSize = 18
+        SliderLabel.Parent = MainFrame
+
+        local SliderFrame = Instance.new("Frame")
+        SliderFrame.Size = UDim2.new(0.8,0,0,10)
+        SliderFrame.Position = UDim2.new(0.1,0,0,yPos+30)
+        SliderFrame.BackgroundColor3 = Color3.fromRGB(255,140,0)
+        SliderFrame.BorderSizePixel = 0
+        SliderFrame.Parent = MainFrame
+
+        local UICorner = Instance.new("UICorner")
+        UICorner.CornerRadius = UDim.new(0,5)
+        UICorner.Parent = SliderFrame
+
+        local Dragger = Instance.new("Frame")
+        Dragger.Size = UDim2.new(0,10,1,0)
+        Dragger.BackgroundColor3 = Color3.fromRGB(255,0,0)
+        Dragger.BorderSizePixel = 0
+        Dragger.Parent = SliderFrame
+
+        local dragging = false
+        Dragger.InputBegan:Connect(function(input)
+            if input.UserInputType == Enum.UserInputType.MouseButton1 then
+                dragging = true
+            end
+        end)
+        UserInputService.InputEnded:Connect(function(input)
+            if input.UserInputType == Enum.UserInputType.MouseButton1 then
+                dragging = false
+            end
+        end)
+        UserInputService.InputChanged:Connect(function(input)
+            if dragging and input.UserInputType == Enum.UserInputType.MouseMovement then
+                local pos = math.clamp(input.Position.X - SliderFrame.AbsolutePosition.X, 0, SliderFrame.AbsoluteSize.X)
+                Dragger.Position = UDim2.new(0,pos-5,0,0)
+                local value = min + (max-min)*(pos/SliderFrame.AbsoluteSize.X)
+                stateRef[1] = math.floor(value*100)/100
+                SliderLabel.Text = name..": "..math.floor(value*100)/100
+            end
+        end)
+    end
+
+    createSlider("Aimbot FOV", 500, 50, 500, {MenuState.aimbotFOV})
+    createSlider("Hitbox Size", 540, 2, 20, {MenuState.hitboxSize})
+    createSlider("Rapid Fire Delay", 580, 0.01, 0.5, {MenuState.rapidFireDelay})
+
+    -- FOV Circle
+    local fovCircle
+    local function updateFOVCircle()
+        if MenuState.showFOV then
+            if not fovCircle then
+                fovCircle = Drawing.new("Circle")
+                fovCircle.Color = Color3.fromRGB(0,255,0)
+                fovCircle.Thickness = 2
+                fovCircle.NumSides = 100
+                fovCircle.Filled = false
+                fovCircle.Visible = true
+            end
+            local mousePos = UserInputService:GetMouseLocation()
+            fovCircle.Position = Vector2.new(mousePos.X, mousePos.Y)
+            fovCircle.Radius = MenuState.aimbotFOV
+        elseif fovCircle then
+            fovCircle:Remove()
+            fovCircle = nil
+        end
+    end
+
+    -- Drag Header
+    local dragging = false
+    local dragInput, mousePos, framePos
+    Header.InputBegan:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.MouseButton1 then
+            dragging = true
+            mousePos = input.Position
+            framePos = MainFrame.Position
+            input.Changed:Connect(function()
+                if input.UserInputState == Enum.UserInputState.End then
+                    dragging = false
+                end
+            end)
+        end
+    end)
+    Header.InputChanged:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.MouseMovement then
+            dragInput = input
+        end
+    end)
+    RunService.RenderStepped:Connect(function()
+        if dragging and dragInput then
+            local delta = dragInput.Position - mousePos
+            MainFrame.Position = framePos + UDim2.new(0, delta.X, 0, delta.Y)
+        end
+        updateFOVCircle()
+    end)
+
+    -- Right Ctrl toggle
+    UserInputService.InputBegan:Connect(function(input, gpe)
+        if gpe then return end
+        if input.KeyCode == Enum.KeyCode.RightControl then
+            MainFrame.Visible = not MainFrame.Visible
+        end
+    end)
+
+    -- Utilities
+    local function isEnemy(plr)
+        return plr.Team ~= player.Team
+    end
+
+    local function getClosestTarget()
+        local closest, shortest = nil, math.huge
+        local mouse = UserInputService:GetMouseLocation()
+        for _,plr in pairs(Players:GetPlayers()) do
+            if plr ~= player and plr.Character and isEnemy(plr) and plr.Character:FindFirstChild(MenuState.aimbotPart) then
+                local screenPos, onScreen = Camera:WorldToViewportPoint(plr.Character[MenuState.aimbotPart].Position)
+                if onScreen then
+                    local dist = (Vector2.new(screenPos.X,screenPos.Y)-Vector2.new(mouse.X,mouse.Y)).Magnitude
+                    if dist < shortest and dist < MenuState.aimbotFOV then
+                        shortest = dist
+                        closest = plr.Character[MenuState.aimbotPart]
+                    end
+                end
+            end
+        end
+        return closest
+    end
+
+    -- Cheats
+    local rapidFireLast = 0
+    RunService.RenderStepped:Connect(function()
+        -- Aimbot
+        if MenuState.aimbot and UserInputService:IsMouseButtonPressed(Enum.UserInputType.MouseButton2) then
+            local target = getClosestTarget()
+            if target then
+                local mousePos = UserInputService:GetMouseLocation()
+                local screenPos,_ = Camera:WorldToViewportPoint(target.Position)
+                local delta = Vector2.new(screenPos.X,screenPos.Y) - Vector2.new(mousePos.X,mousePos.Y)
+                mousemoverel(delta.X*0.2, delta.Y*0.2)
+            end
+        end
+
+        -- Rapid Fire
+        if MenuState.rapidfire and tick()-rapidFireLast >= MenuState.rapidFireDelay then
+            rapidFireLast = tick()
+            local tool = player.Character and player.Character:FindFirstChildOfClass("Tool")
+            if tool then tool:Activate() end
+        end
+
+        -- Kill All
+        if MenuState.killall then
+            for _,plr in pairs(Players:GetPlayers()) do
+                if plr ~= player and isEnemy(plr) and plr.Character then
+                    local hum = plr.Character:FindFirstChildOfClass("Humanoid")
+                    if hum then hum.Health = 0 end
+                end
+            end
+        end
+
+        -- Hitbox Extender
+        if MenuState.hitbox then
+            for _,plr in pairs(Players:GetPlayers()) do
+                if plr ~= player and isEnemy(plr) and plr.Character then
+                    local part = plr.Character:FindFirstChild("HumanoidRootPart")
+                    if part then
+                        part.Size = Vector3.new(MenuState.hitboxSize,MenuState.hitboxSize,MenuState.hitboxSize)
+                    end
+                end
+            end
+        end
+
+        -- ESP
+        if MenuState.esp then
+            for _,plr in pairs(Players:GetPlayers()) do
+                if plr ~= player and isEnemy(plr) and plr.Character then
+                    for _,part in pairs(plr.Character:GetChildren()) do
+                        if part:IsA("BasePart") and not part:FindFirstChild("ESP") then
+                            local box = Instance.new("BoxHandleAdornment")
+                            box.Name = "ESP"
+                            box.Adornee = part
+                            box.AlwaysOnTop = true
+                            box.ZIndex = 2
+                            box.Size = part.Size
+                            box.Color3 = Color3.fromRGB(255,140,0)
+                            box.Transparency = 0.5
+                            box.Parent = part
+                        elseif part:IsA("BasePart") and part:FindFirstChild("ESP") then
+                            part.ESP.Size = part.Size
+                        end
+                    end
+                end
+            end
+        else
+            -- Remove ESP
+            for _,plr in pairs(Players:GetPlayers()) do
+                if plr.Character then
+                    for _,part in pairs(plr.Character:GetChildren()) do
+                        if part:IsA("BasePart") and part:FindFirstChild("ESP") then
+                            part.ESP:Destroy()
+                        end
+                    end
+                end
+            end
+        end
+    end)
+end
+
+-- Key Button
 enterButton.MouseButton1Click:Connect(function()
     if keyBox.Text == "DEVON2025" then
         keyLabel.Text = "Valid Key!"
         keyLabel.TextColor3 = Color3.fromRGB(0,255,0)
         wait(0.5)
-        keyGui:Destroy()
+        loadMenu()
     else
         keyLabel.Text = "Invalid Key!"
         keyLabel.TextColor3 = Color3.fromRGB(255,0,0)
-    end
-end)
-
---// Main Menu GUI
-local ScreenGui = Instance.new("ScreenGui", player:WaitForChild("PlayerGui"))
-ScreenGui.Name = "DevonsArsenalMenu"
-
-local MainFrame = Instance.new("Frame")
-MainFrame.Size = UDim2.new(0,460,0,650)
-MainFrame.Position = UDim2.new(0.5,-230,0.5,-325)
-MainFrame.BackgroundColor3 = Color3.fromRGB(30,30,30)
-MainFrame.BorderSizePixel = 0
-MainFrame.Active = true
-MainFrame.Parent = ScreenGui
-
-local UICornerMain = Instance.new("UICorner")
-UICornerMain.CornerRadius = UDim.new(0, 12)
-UICornerMain.Parent = MainFrame
-
-local Header = Instance.new("TextLabel")
-Header.Size = UDim2.new(1,0,0,60)
-Header.Position = UDim2.new(0,0,0,0)
-Header.BackgroundColor3 = Color3.fromRGB(55,55,55)
-Header.BorderSizePixel = 0
-Header.Text = "Devons Arsenal Menu (v12)"
-Header.TextColor3 = Color3.fromRGB(255,255,255)
-Header.Font = Enum.Font.GothamBold
-Header.TextSize = 26
-Header.Parent = MainFrame
-
-local UICornerHeader = Instance.new("UICorner")
-UICornerHeader.CornerRadius = UDim.new(0,12)
-UICornerHeader.Parent = Header
-
-local HeaderImage = Instance.new("ImageLabel")
-HeaderImage.Size = UDim2.new(0,40,0,40)
-HeaderImage.Position = UDim2.new(1,-50,0,10)
-HeaderImage.BackgroundTransparency = 1
-HeaderImage.Image = "rbxassetid://101270819539963"
-HeaderImage.Parent = Header
-
---// Buttons
-local function createButton(name, yPos, stateKey)
-    local btn = Instance.new("TextButton")
-    btn.Size = UDim2.new(0.8,0,0,45)
-    btn.Position = UDim2.new(0.1,0,0,yPos)
-    btn.BackgroundColor3 = MenuState[stateKey] and Color3.fromRGB(0,200,0) or Color3.fromRGB(150,0,0)
-    btn.BorderSizePixel = 0
-    btn.Text = name
-    btn.TextColor3 = Color3.fromRGB(255,255,255)
-    btn.Font = Enum.Font.Gotham
-    btn.TextSize = 20
-    btn.Parent = MainFrame
-
-    local UICornerBtn = Instance.new("UICorner")
-    UICornerBtn.CornerRadius = UDim.new(0, 8)
-    UICornerBtn.Parent = btn
-
-    btn.MouseButton1Click:Connect(function()
-        MenuState[stateKey] = not MenuState[stateKey]
-        btn.BackgroundColor3 = MenuState[stateKey] and Color3.fromRGB(0,200,0) or Color3.fromRGB(150,0,0)
-    end)
-    return btn
-end
-
-createButton("Aimbot", 80, "aimbot")
-createButton("ESP", 150, "esp")
-createButton("Hitbox Extender", 220, "hitbox")
-createButton("Kill All", 290, "killall")
-createButton("Rapid Fire", 360, "rapidfire")
-createButton("Show FOV", 430, "showFOV")
-
--- Head/Torso toggle
-local PartToggle = Instance.new("TextButton")
-PartToggle.Size = UDim2.new(0,60,0,30)
-PartToggle.Position = UDim2.new(0.65,0,80/650,5)
-PartToggle.BackgroundColor3 = Color3.fromRGB(80,80,80)
-PartToggle.BorderSizePixel = 0
-PartToggle.Text = MenuState.aimbotPart
-PartToggle.TextColor3 = Color3.fromRGB(255,255,255)
-PartToggle.Font = Enum.Font.Gotham
-PartToggle.TextSize = 14
-PartToggle.Parent = MainFrame
-
-PartToggle.MouseButton1Click:Connect(function()
-    MenuState.aimbotPart = (MenuState.aimbotPart == "Head") and "Torso" or "Head"
-    PartToggle.Text = MenuState.aimbotPart
-end)
-
---// Sliders
-local function createSlider(name, yPos, min, max, valueRef)
-    local sliderLabel = Instance.new("TextLabel")
-    sliderLabel.Size = UDim2.new(0.8,0,0,20)
-    sliderLabel.Position = UDim2.new(0.1,0,0,yPos)
-    sliderLabel.BackgroundTransparency = 1
-    sliderLabel.TextColor3 = Color3.fromRGB(255,255,255)
-    sliderLabel.Font = Enum.Font.Gotham
-    sliderLabel.TextSize = 16
-    sliderLabel.Text = name.." "..math.floor(valueRef[1])
-    sliderLabel.Parent = MainFrame
-
-    local slider = Instance.new("Frame")
-    slider.Size = UDim2.new(0.8,0,0,10)
-    slider.Position = UDim2.new(0.1,0,0,yPos+20)
-    slider.BackgroundColor3 = Color3.fromRGB(100,100,100)
-    slider.Parent = MainFrame
-
-    local fill = Instance.new("Frame")
-    fill.Size = UDim2.new((valueRef[1]-min)/(max-min),0,1,0)
-    fill.BackgroundColor3 = Color3.fromRGB(0,200,0)
-    fill.Parent = slider
-
-    local dragging = false
-    slider.InputBegan:Connect(function(input)
-        if input.UserInputType == Enum.UserInputType.MouseButton1 then
-            dragging = true
-        end
-    end)
-    slider.InputEnded:Connect(function(input)
-        if input.UserInputType == Enum.UserInputType.MouseButton1 then
-            dragging = false
-        end
-    end)
-    UserInputService.InputChanged:Connect(function(input)
-        if dragging and input.UserInputType == Enum.UserInputType.MouseMovement then
-            local relative = math.clamp((input.Position.X - slider.AbsolutePosition.X)/slider.AbsoluteSize.X,0,1)
-            fill.Size = UDim2.new(relative,0,1,0)
-            valueRef[1] = min + (max-min)*relative
-            sliderLabel.Text = name.." "..math.floor(valueRef[1])
-        end
-    end)
-end
-
-createSlider("Aimbot FOV", 500, 50, 1000, {MenuState.aimbotFOV})
-createSlider("Hitbox Size", 540, 2, 20, {MenuState.hitboxSize})
-createSlider("Rapid Fire Delay", 580, 0.01, 0.5, {MenuState.rapidFireDelay})
-
---// FOV Circle
-local fovCircle
-local function updateFOVCircle()
-    if MenuState.showFOV then
-        if not fovCircle then
-            fovCircle = Drawing.new("Circle")
-            fovCircle.Color = Color3.fromRGB(0,255,0)
-            fovCircle.Thickness = 2
-            fovCircle.NumSides = 100
-            fovCircle.Filled = false
-            fovCircle.Visible = true
-        end
-        local mousePos = UserInputService:GetMouseLocation()
-        fovCircle.Position = Vector2.new(mousePos.X, mousePos.Y)
-        fovCircle.Radius = MenuState.aimbotFOV
-    elseif fovCircle then
-        fovCircle:Remove()
-        fovCircle = nil
-    end
-end
-
---// Draggable Header
-local dragging = false
-local dragInput, mousePos, framePos
-Header.InputBegan:Connect(function(input)
-    if input.UserInputType == Enum.UserInputType.MouseButton1 then
-        dragging = true
-        mousePos = input.Position
-        framePos = MainFrame.Position
-        input.Changed:Connect(function()
-            if input.UserInputState == Enum.UserInputState.End then
-                dragging = false
-            end
-        end)
-    end
-end)
-Header.InputChanged:Connect(function(input)
-    if input.UserInputType == Enum.UserInputType.MouseMovement then
-        dragInput = input
-    end
-end)
-RunService.RenderStepped:Connect(function()
-    if dragging and dragInput then
-        local delta = dragInput.Position - mousePos
-        MainFrame.Position = framePos + UDim2.new(0, delta.X, 0, delta.Y)
-    end
-    updateFOVCircle()
-end)
-
--- Right Ctrl toggle
-UserInputService.InputBegan:Connect(function(input, gpe)
-    if gpe then return end
-    if input.KeyCode == Enum.KeyCode.RightControl then
-        MainFrame.Visible = not MainFrame.Visible
-    end
-end)
-
---// Utilities
-local function isEnemy(plr)
-    return plr.Team ~= player.Team
-end
-
-local function getClosestVisibleTarget()
-    local closest, shortest = nil, math.huge
-    local mouse = UserInputService:GetMouseLocation()
-    for _,plr in pairs(Players:GetPlayers()) do
-        if plr ~= player and plr.Character and isEnemy(plr) and plr.Character:FindFirstChild(MenuState.aimbotPart) then
-            local screenPos, onScreen = Camera:WorldToViewportPoint(plr.Character[MenuState.aimbotPart].Position)
-            if onScreen then
-                local dist = (Vector2.new(screenPos.X,screenPos.Y)-Vector2.new(mouse.X,mouse.Y)).Magnitude
-                if dist < shortest and dist < MenuState.aimbotFOV then
-                    shortest = dist
-                    closest = plr.Character[MenuState.aimbotPart]
-                end
-            end
-        end
-    end
-    return closest
-end
-
---// Cheats Logic
-local rapidFireLast = 0
-RunService.RenderStepped:Connect(function()
-    -- Aimbot
-    if MenuState.aimbot and UserInputService:IsMouseButtonPressed(Enum.UserInputType.MouseButton2) then
-        local targetPart = getClosestVisibleTarget()
-        if targetPart then
-            local mousePos = UserInputService:GetMouseLocation()
-            local screenPos, _ = Camera:WorldToViewportPoint(targetPart.Position)
-            local delta = Vector2.new(screenPos.X, screenPos.Y) - Vector2.new(mousePos.X, mousePos.Y)
-            local smooth = 0.2
-            mousemoverel(delta.X*smooth, delta.Y*smooth)
-        end
-    end
-
-    -- Rapid Fire
-    if MenuState.rapidfire and tick()-rapidFireLast >= MenuState.rapidFireDelay then
-        rapidFireLast = tick()
-        local tool = player.Character and player.Character:FindFirstChildOfClass("Tool")
-        if tool then tool:Activate() end
-    end
-
-    -- Kill All
-    if MenuState.killall then
-        for _,plr in pairs(Players:GetPlayers()) do
-            if plr ~= player and plr.Character and isEnemy(plr) and plr.Character:FindFirstChild("HumanoidRootPart") then
-                if player.Character and player.Character:FindFirstChild("HumanoidRootPart") then
-                    player.Character.HumanoidRootPart.CFrame = plr.Character.HumanoidRootPart.CFrame * CFrame.new(0,0,3)
-                    local tool = player.Character:FindFirstChildOfClass("Tool")
-                    if tool then tool:Activate() end
-                end
-            end
-        end
-    end
-
-    -- Hitbox Expander
-    if MenuState.hitbox then
-        for _,plr in pairs(Players:GetPlayers()) do
-            if plr ~= player and plr.Character and isEnemy(plr) then
-                local hrp = plr.Character:FindFirstChild("HumanoidRootPart")
-                if hrp then
-                    hrp.Size = Vector3.new(MenuState.hitboxSize,MenuState.hitboxSize,MenuState.hitboxSize)
-                    hrp.Transparency = 0.5
-                end
-            end
-        end
-    end
-
-    -- ESP Boxes
-    for _,plr in pairs(Players:GetPlayers()) do
-        if plr ~= player and plr.Character and isEnemy(plr) then
-            local hrp = plr.Character:FindFirstChild("HumanoidRootPart")
-            if hrp then
-                if not hrp:FindFirstChild("ESP") then
-                    local bill = Instance.new("BillboardGui")
-                    bill.Name = "ESP"
-                    bill.Adornee = hrp
-                    bill.Size = UDim2.new(0,100,0,50)
-                    bill.AlwaysOnTop = true
-                    bill.Parent = hrp
-
-                    local text = Instance.new("TextLabel")
-                    text.Size = UDim2.new(1,0,1,0)
-                    text.BackgroundTransparency = 1
-                    text.Font = Enum.Font.GothamBold
-                    text.TextScaled = true
-                    text.Parent = bill
-                end
-
-                local espText = hrp.ESP:FindFirstChildOfClass("TextLabel")
-                if espText and player.Character and player.Character:FindFirstChild("HumanoidRootPart") then
-                    local dist = (player.Character.HumanoidRootPart.Position - hrp.Position).Magnitude
-                    espText.TextColor3 = Color3.fromRGB(255,0,0)
-                    espText.Text = plr.Name.." ["..math.floor(dist).."m]"
-                end
-            end
-        elseif plr.Character and plr.Character:FindFirstChild("HumanoidRootPart") then
-            local hrp = plr.Character.HumanoidRootPart
-            if hrp:FindFirstChild("ESP") then
-                hrp.ESP:Destroy()
-            end
-        end
     end
 end)
