@@ -2,18 +2,19 @@
 local Players = game:GetService("Players")
 local player = Players.LocalPlayer
 
---// Correct Key
+--// Key Configuration
 local correctKey = "DEVON123" -- Change this to your desired key
 
---// Key GUI
+--// ScreenGui
 local KeyGui = Instance.new("ScreenGui")
-KeyGui.Name = "KeySystem"
+KeyGui.Name = "KeyGui"
 KeyGui.Parent = player:WaitForChild("PlayerGui")
 
+--// Frame
 local KeyFrame = Instance.new("Frame")
 KeyFrame.Size = UDim2.new(0, 400, 0, 200)
 KeyFrame.Position = UDim2.new(0.5, -200, 0.5, -100)
-KeyFrame.BackgroundColor3 = Color3.fromRGB(35,35,35)
+KeyFrame.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
 KeyFrame.BorderSizePixel = 0
 KeyFrame.Parent = KeyGui
 
@@ -21,63 +22,70 @@ local UICornerFrame = Instance.new("UICorner")
 UICornerFrame.CornerRadius = UDim.new(0, 12)
 UICornerFrame.Parent = KeyFrame
 
+--// Title
 local Title = Instance.new("TextLabel")
 Title.Size = UDim2.new(1,0,0,50)
 Title.Position = UDim2.new(0,0,0,0)
 Title.BackgroundTransparency = 1
-Title.Text = "Enter Access Key"
+Title.Text = "Enter Key"
 Title.TextColor3 = Color3.fromRGB(255,255,255)
 Title.Font = Enum.Font.GothamBold
-Title.TextSize = 24
+Title.TextSize = 28
 Title.Parent = KeyFrame
 
+--// TextBox
 local KeyBox = Instance.new("TextBox")
-KeyBox.Size = UDim2.new(0.8,0,0,40)
+KeyBox.Size = UDim2.new(0.8,0,0,50)
 KeyBox.Position = UDim2.new(0.1,0,0,70)
 KeyBox.BackgroundColor3 = Color3.fromRGB(55,55,55)
 KeyBox.TextColor3 = Color3.fromRGB(255,255,255)
 KeyBox.Font = Enum.Font.Gotham
-KeyBox.PlaceholderText = "Enter Key..."
-KeyBox.TextSize = 20
+KeyBox.TextSize = 24
+KeyBox.PlaceholderText = "Enter your key here"
 KeyBox.ClearTextOnFocus = false
 KeyBox.Parent = KeyFrame
 
+local UICornerBox = Instance.new("UICorner")
+UICornerBox.CornerRadius = UDim.new(0, 8)
+UICornerBox.Parent = KeyBox
+
+--// Enter Button
 local EnterButton = Instance.new("TextButton")
 EnterButton.Size = UDim2.new(0.5,0,0,40)
-EnterButton.Position = UDim2.new(0.25,0,0,130)
+EnterButton.Position = UDim2.new(0.25,0,0,140)
 EnterButton.BackgroundColor3 = Color3.fromRGB(150,0,0)
 EnterButton.TextColor3 = Color3.fromRGB(255,255,255)
+EnterButton.Text = "Enter"
 EnterButton.Font = Enum.Font.GothamBold
 EnterButton.TextSize = 20
-EnterButton.Text = "Enter"
 EnterButton.Parent = KeyFrame
 
-local UICornerButton = Instance.new("UICorner")
-UICornerButton.CornerRadius = UDim.new(0, 8)
-UICornerButton.Parent = EnterButton
+local UICornerBtn = Instance.new("UICorner")
+UICornerBtn.CornerRadius = UDim.new(0, 8)
+UICornerBtn.Parent = EnterButton
 
-local MessageLabel = Instance.new("TextLabel")
-MessageLabel.Size = UDim2.new(1,0,0,30)
-MessageLabel.Position = UDim2.new(0,0,1,-35)
-MessageLabel.BackgroundTransparency = 1
-MessageLabel.TextColor3 = Color3.fromRGB(255,255,255)
-MessageLabel.Font = Enum.Font.Gotham
-MessageLabel.TextSize = 18
-MessageLabel.Text = ""
-MessageLabel.Parent = KeyFrame
+--// Feedback Label
+local Feedback = Instance.new("TextLabel")
+Feedback.Size = UDim2.new(1,0,0,30)
+Feedback.Position = UDim2.new(0,0,1,-35)
+Feedback.BackgroundTransparency = 1
+Feedback.TextColor3 = Color3.fromRGB(255,0,0)
+Feedback.Font = Enum.Font.GothamBold
+Feedback.TextSize = 18
+Feedback.Text = ""
+Feedback.Parent = KeyFrame
 
---// Enter Button Event
+--// Enter Button Function
 EnterButton.MouseButton1Click:Connect(function()
     if KeyBox.Text == correctKey then
-        MessageLabel.Text = "Valid Key! Loading menu..."
-        wait(0.5)
-        KeyGui:Destroy() -- Remove key GUI
-
-        -- Load external Devons Arsenal menu
+        Feedback.TextColor3 = Color3.fromRGB(0,255,0)
+        Feedback.Text = "Valid Key! Loading..."
+        wait(1)
+        KeyGui:Destroy()
+        -- Load your main menu here
         loadstring(game:HttpGet("https://raw.githubusercontent.com/devoncrodie-create/devonsv12arsenalmenu/refs/heads/main/devons%20v12%20arsenal%20menu%20upd2%20upd2"))()
     else
-        MessageLabel.Text = "Invalid Key!"
-        wait(1.5)
-        MessageLabel.Text = ""
+        Feedback.TextColor3 = Color3.fromRGB(255,0,0)
+        Feedback.Text = "Invalid Key!"
     end
 end)
