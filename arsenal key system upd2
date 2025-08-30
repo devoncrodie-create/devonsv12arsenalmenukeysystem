@@ -1,91 +1,404 @@
 --// Services
 local Players = game:GetService("Players")
+local RunService = game:GetService("RunService")
+local UserInputService = game:GetService("UserInputService")
+local Camera = workspace.CurrentCamera
 local player = Players.LocalPlayer
 
---// Key Configuration
-local correctKey = "DEVON123" -- Change this to your desired key
+--// Key System
+local VALID_KEYS = {["DEVONS123"]=true} -- Add more keys if needed
 
---// ScreenGui
+--// ScreenGui for Key
 local KeyGui = Instance.new("ScreenGui")
 KeyGui.Name = "KeyGui"
 KeyGui.Parent = player:WaitForChild("PlayerGui")
 
---// Frame
 local KeyFrame = Instance.new("Frame")
-KeyFrame.Size = UDim2.new(0, 400, 0, 200)
-KeyFrame.Position = UDim2.new(0.5, -200, 0.5, -100)
-KeyFrame.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
+KeyFrame.Size = UDim2.new(0,300,0,150)
+KeyFrame.Position = UDim2.new(0.5,-150,0.5,-75)
+KeyFrame.BackgroundColor3 = Color3.fromRGB(25,25,25)
 KeyFrame.BorderSizePixel = 0
 KeyFrame.Parent = KeyGui
 
-local UICornerFrame = Instance.new("UICorner")
-UICornerFrame.CornerRadius = UDim.new(0, 12)
-UICornerFrame.Parent = KeyFrame
+local UICornerKey = Instance.new("UICorner")
+UICornerKey.CornerRadius = UDim.new(0,12)
+UICornerKey.Parent = KeyFrame
 
---// Title
-local Title = Instance.new("TextLabel")
-Title.Size = UDim2.new(1,0,0,50)
-Title.Position = UDim2.new(0,0,0,0)
-Title.BackgroundTransparency = 1
-Title.Text = "Enter Key"
-Title.TextColor3 = Color3.fromRGB(255,255,255)
-Title.Font = Enum.Font.GothamBold
-Title.TextSize = 28
-Title.Parent = KeyFrame
+local KeyLabel = Instance.new("TextLabel")
+KeyLabel.Size = UDim2.new(1,0,0,50)
+KeyLabel.Position = UDim2.new(0,0,0,0)
+KeyLabel.BackgroundTransparency = 1
+KeyLabel.Text = "Enter Key to Load Menu"
+KeyLabel.TextColor3 = Color3.fromRGB(255,255,255)
+KeyLabel.Font = Enum.Font.GothamBold
+KeyLabel.TextSize = 22
+KeyLabel.Parent = KeyFrame
 
---// TextBox
 local KeyBox = Instance.new("TextBox")
-KeyBox.Size = UDim2.new(0.8,0,0,50)
-KeyBox.Position = UDim2.new(0.1,0,0,70)
-KeyBox.BackgroundColor3 = Color3.fromRGB(55,55,55)
+KeyBox.Size = UDim2.new(0.8,0,0,40)
+KeyBox.Position = UDim2.new(0.1,0,0,60)
+KeyBox.BackgroundColor3 = Color3.fromRGB(45,45,45)
 KeyBox.TextColor3 = Color3.fromRGB(255,255,255)
-KeyBox.Font = Enum.Font.Gotham
-KeyBox.TextSize = 24
-KeyBox.PlaceholderText = "Enter your key here"
+KeyBox.PlaceholderText = "Enter Key Here"
 KeyBox.ClearTextOnFocus = false
+KeyBox.Font = Enum.Font.Gotham
+KeyBox.TextSize = 18
 KeyBox.Parent = KeyFrame
 
-local UICornerBox = Instance.new("UICorner")
-UICornerBox.CornerRadius = UDim.new(0, 8)
-UICornerBox.Parent = KeyBox
+local KeyButton = Instance.new("TextButton")
+KeyButton.Size = UDim2.new(0.8,0,0,35)
+KeyButton.Position = UDim2.new(0.1,0,0,110)
+KeyButton.BackgroundColor3 = Color3.fromRGB(0,150,0)
+KeyButton.Text = "Enter"
+KeyButton.TextColor3 = Color3.fromRGB(255,255,255)
+KeyButton.Font = Enum.Font.Gotham
+KeyButton.TextSize = 18
+KeyButton.Parent = KeyFrame
 
---// Enter Button
-local EnterButton = Instance.new("TextButton")
-EnterButton.Size = UDim2.new(0.5,0,0,40)
-EnterButton.Position = UDim2.new(0.25,0,0,140)
-EnterButton.BackgroundColor3 = Color3.fromRGB(150,0,0)
-EnterButton.TextColor3 = Color3.fromRGB(255,255,255)
-EnterButton.Text = "Enter"
-EnterButton.Font = Enum.Font.GothamBold
-EnterButton.TextSize = 20
-EnterButton.Parent = KeyFrame
+local function loadMainMenu()
+    KeyGui:Destroy() -- remove key GUI
 
-local UICornerBtn = Instance.new("UICorner")
-UICornerBtn.CornerRadius = UDim.new(0, 8)
-UICornerBtn.Parent = EnterButton
+    --// Menu State
+    local MenuState = {
+        aimbot=false, esp=false, hitbox=false, killall=false, rapidfire=false,
+        hitboxSize=5, aimbotFOV=200, rapidFireDelay=0.1, aimbotPart="Head"
+    }
 
---// Feedback Label
-local Feedback = Instance.new("TextLabel")
-Feedback.Size = UDim2.new(1,0,0,30)
-Feedback.Position = UDim2.new(0,0,1,-35)
-Feedback.BackgroundTransparency = 1
-Feedback.TextColor3 = Color3.fromRGB(255,0,0)
-Feedback.Font = Enum.Font.GothamBold
-Feedback.TextSize = 18
-Feedback.Text = ""
-Feedback.Parent = KeyFrame
+    --// ScreenGui
+    local ScreenGui = Instance.new("ScreenGui")
+    ScreenGui.Name = "DevonsArsenalMenu"
+    ScreenGui.Parent = player:WaitForChild("PlayerGui")
 
---// Enter Button Function
-EnterButton.MouseButton1Click:Connect(function()
-    if KeyBox.Text == correctKey then
-        Feedback.TextColor3 = Color3.fromRGB(0,255,0)
-        Feedback.Text = "Valid Key! Loading..."
-        wait(1)
-        KeyGui:Destroy()
-        -- Load your main menu here
-        loadstring(game:HttpGet("https://raw.githubusercontent.com/devoncrodie-create/devonsv12arsenalmenu/refs/heads/main/devons%20v12%20arsenal%20menu%20upd2%20upd2"))()
+    --// Main Frame
+    local MainFrame = Instance.new("Frame")
+    MainFrame.Size = UDim2.new(0,460,0,650)
+    MainFrame.Position = UDim2.new(0.5,-230,0.5,-325)
+    MainFrame.BackgroundColor3 = Color3.fromRGB(30,30,30)
+    MainFrame.BorderSizePixel = 0
+    MainFrame.Active = true
+    MainFrame.Parent = ScreenGui
+
+    local UICornerMain = Instance.new("UICorner")
+    UICornerMain.CornerRadius = UDim.new(0,12)
+    UICornerMain.Parent = MainFrame
+
+    --// Header
+    local Header = Instance.new("TextLabel")
+    Header.Size = UDim2.new(1,0,0,60)
+    Header.Position = UDim2.new(0,0,0,0)
+    Header.BackgroundColor3 = Color3.fromRGB(55,55,55)
+    Header.BorderSizePixel = 0
+    Header.Text = "Devons Arsenal Menu (v13)"
+    Header.TextColor3 = Color3.fromRGB(255,255,255)
+    Header.Font = Enum.Font.GothamBold
+    Header.TextSize = 26
+    Header.Parent = MainFrame
+
+    local UICornerHeader = Instance.new("UICorner")
+    UICornerHeader.CornerRadius = UDim.new(0,12)
+    UICornerHeader.Parent = Header
+
+    local HeaderImage = Instance.new("ImageLabel")
+    HeaderImage.Size = UDim2.new(0,40,0,40)
+    HeaderImage.Position = UDim2.new(1,-50,0,10)
+    HeaderImage.BackgroundTransparency = 1
+    HeaderImage.Image = "rbxassetid://101455013322456"
+    HeaderImage.Parent = Header
+
+    --// Close Label
+    local CloseLabel = Instance.new("TextLabel")
+    CloseLabel.Size = UDim2.new(1,0,0,20)
+    CloseLabel.Position = UDim2.new(0,0,1,-30)
+    CloseLabel.BackgroundTransparency = 1
+    CloseLabel.Text = "Right Ctrl to Close"
+    CloseLabel.TextColor3 = Color3.fromRGB(200,200,200)
+    CloseLabel.Font = Enum.Font.Gotham
+    CloseLabel.TextSize = 16
+    CloseLabel.Parent = MainFrame
+
+    --// Button Creator
+    local function createButton(name,yPos,stateKey)
+        local btn=Instance.new("TextButton")
+        btn.Size=UDim2.new(0.8,0,0,45)
+        btn.Position=UDim2.new(0.1,0,0,yPos)
+        btn.BackgroundColor3=MenuState[stateKey] and Color3.fromRGB(0,200,0) or Color3.fromRGB(150,0,0)
+        btn.BorderSizePixel=0
+        btn.Text=name
+        btn.TextColor3=Color3.fromRGB(255,255,255)
+        btn.Font=Enum.Font.Gotham
+        btn.TextSize=20
+        btn.Parent=MainFrame
+
+        local UICornerBtn=Instance.new("UICorner")
+        UICornerBtn.CornerRadius=UDim.new(0,8)
+        UICornerBtn.Parent=btn
+
+        btn.MouseEnter:Connect(function()
+            btn.BackgroundColor3=btn.BackgroundColor3:Lerp(Color3.fromRGB(200,50,50),0.3)
+        end)
+        btn.MouseLeave:Connect(function()
+            btn.BackgroundColor3=MenuState[stateKey] and Color3.fromRGB(0,200,0) or Color3.fromRGB(150,0,0)
+        end)
+        btn.MouseButton1Click:Connect(function()
+            MenuState[stateKey]=not MenuState[stateKey]
+            btn.BackgroundColor3=MenuState[stateKey] and Color3.fromRGB(0,200,0) or Color3.fromRGB(150,0,0)
+        end)
+        return btn
+    end
+
+    local AimbotButton=createButton("Aimbot",80,"aimbot")
+    local ESPButton=createButton("ESP",150,"esp")
+    local HitboxButton=createButton("Hitbox Extender",220,"hitbox")
+    local KillAllButton=createButton("Kill All",290,"killall")
+    local RapidFireButton=createButton("Rapid Fire",360,"rapidfire")
+
+    --// Head/Torso Selector
+    local PartToggle=Instance.new("TextButton")
+    PartToggle.Size=UDim2.new(0,60,0,30)
+    PartToggle.Position=UDim2.new(0.65,0,80/650,5)
+    PartToggle.BackgroundColor3=Color3.fromRGB(80,80,80)
+    PartToggle.BorderSizePixel=0
+    PartToggle.Text=MenuState.aimbotPart
+    PartToggle.TextColor3=Color3.fromRGB(255,255,255)
+    PartToggle.Font=Enum.Font.Gotham
+    PartToggle.TextSize=14
+    PartToggle.Parent=MainFrame
+
+    local UICornerToggle=Instance.new("UICorner")
+    UICornerToggle.CornerRadius=UDim.new(0,6)
+    UICornerToggle.Parent=PartToggle
+
+    PartToggle.MouseButton1Click:Connect(function()
+        if MenuState.aimbotPart=="Head" then MenuState.aimbotPart="Torso"
+        else MenuState.aimbotPart="Head" end
+        PartToggle.Text=MenuState.aimbotPart
+    end)
+
+    --// Sliders
+    local function createSlider(name,yPos,min,max,stateKey)
+        local frame=Instance.new("Frame")
+        frame.Size=UDim2.new(0.8,0,0,50)
+        frame.Position=UDim2.new(0.1,0,0,yPos)
+        frame.BackgroundColor3=Color3.fromRGB(40,40,40)
+        frame.Parent=MainFrame
+
+        local UICornerSlider=Instance.new("UICorner")
+        UICornerSlider.CornerRadius=UDim.new(0,8)
+        UICornerSlider.Parent=frame
+
+        local label=Instance.new("TextLabel")
+        label.Size=UDim2.new(0.6,0,1,0)
+        label.Position=UDim2.new(0,0,0,0)
+        label.BackgroundTransparency=1
+        label.Text=name..": "..MenuState[stateKey]
+        label.TextColor3=Color3.fromRGB(255,255,255)
+        label.Font=Enum.Font.Gotham
+        label.TextSize=16
+        label.TextXAlignment=Enum.TextXAlignment.Left
+        label.Parent=frame
+
+        local sliderBar=Instance.new("Frame")
+        sliderBar.Size=UDim2.new(1,-100,0,10)
+        sliderBar.Position=UDim2.new(0,100,0.5,-5)
+        sliderBar.BackgroundColor3=Color3.fromRGB(150,150,150)
+        sliderBar.Parent=frame
+
+        local fill=Instance.new("Frame")
+        fill.Size=UDim2.new((MenuState[stateKey]-min)/(max-min),0,1,0)
+        fill.BackgroundColor3=Color3.fromRGB(0,200,0)
+        fill.Parent=sliderBar
+
+        local dragging=false
+        sliderBar.InputBegan:Connect(function(input)
+            if input.UserInputType==Enum.UserInputType.MouseButton1 then dragging=true end
+        end)
+        sliderBar.InputEnded:Connect(function(input)
+            if input.UserInputType==Enum.UserInputType.MouseButton1 then dragging=false end
+        end)
+        UserInputService.InputChanged:Connect(function(input)
+            if dragging and input.UserInputType==Enum.UserInputType.MouseMovement then
+                local mouseX=UserInputService:GetMouseLocation().X - sliderBar.AbsolutePosition.X
+                local percent=math.clamp(mouseX/sliderBar.AbsoluteSize.X,0,1)
+                local value=min+(max-min)*percent
+                fill.Size=UDim2.new(percent,0,1,0)
+                label.Text=name..": "..math.floor(value)
+                MenuState[stateKey]=value
+            end
+        end)
+    end
+
+    createSlider("Hitbox Size",430,1,15,"hitboxSize")
+    createSlider("Aimbot FOV",490,50,500,"aimbotFOV")
+    createSlider("Rapid Fire Speed",550,0.01,0.5,"rapidFireDelay")
+
+    --// ESP
+    local ESPBoxes={}
+    local function createESP(plr)
+        if ESPBoxes[plr] then return end
+        local box=Drawing.new("Quad")
+        box.Color=Color3.fromRGB(255,0,0)
+        box.Thickness=2
+        box.Transparency=1
+        box.Visible=true
+        local nameTxt=Drawing.new("Text")
+        nameTxt.Text=plr.Name
+        nameTxt.Color=Color3.fromRGB(255,255,255)
+        nameTxt.Size=18
+        nameTxt.Visible=true
+        local healthTxt=Drawing.new("Text")
+        healthTxt.Text="100"
+        healthTxt.Color=Color3.fromRGB(0,255,0)
+        healthTxt.Size=16
+        healthTxt.Visible=true
+        ESPBoxes[plr]={box=box,name=nameTxt,health=healthTxt}
+    end
+    local function removeESP(plr)
+        if ESPBoxes[plr] then
+            ESPBoxes[plr].box:Remove()
+            ESPBoxes[plr].name:Remove()
+            ESPBoxes[plr].health:Remove()
+            ESPBoxes[plr]=nil
+        end
+    end
+    local function isEnemy(plr)
+        return plr.Team~=player.Team
+    end
+
+    --// Main Loop
+    local rapidFireLast=0
+    RunService.RenderStepped:Connect(function()
+        local mouse=player:GetMouse()
+        -- Aimbot
+        if MenuState.aimbot and UserInputService:IsMouseButtonPressed(Enum.UserInputType.MouseButton2) then
+            local closest
+            local shortest=math.huge
+            for _,plr in pairs(Players:GetPlayers()) do
+                if plr~=player and isEnemy(plr) and plr.Character and plr.Character:FindFirstChild(MenuState.aimbotPart) then
+                    local screenPos,onScreen=Camera:WorldToViewportPoint(plr.Character[MenuState.aimbotPart].Position)
+                    if onScreen then
+                        local dist=(Vector2.new(screenPos.X,screenPos.Y)-Vector2.new(mouse.X,mouse.Y)).Magnitude
+                        if dist<shortest and dist<MenuState.aimbotFOV then
+                            shortest=dist
+                            closest=plr
+                        end
+                    end
+                end
+            end
+            if closest then
+                local hrp=closest.Character[MenuState.aimbotPart]
+                mousemoverel((Camera:WorldToViewportPoint(hrp.Position)-Vector3.new(mouse.X,mouse.Y,0)).Unit*0.5)
+            end
+        end
+
+        -- Hitbox Extender
+        if MenuState.hitbox then
+            for _,plr in pairs(Players:GetPlayers()) do
+                if plr~=player and isEnemy(plr) and plr.Character and plr.Character:FindFirstChild("HumanoidRootPart") then
+                    plr.Character.HumanoidRootPart.Size=Vector3.new(MenuState.hitboxSize,MenuState.hitboxSize,MenuState.hitboxSize)
+                    plr.Character.HumanoidRootPart.Transparency=0.5
+                end
+            end
+        end
+
+        -- ESP
+        if MenuState.esp then
+            for _,plr in pairs(Players:GetPlayers()) do
+                if plr~=player and isEnemy(plr) and plr.Character and plr.Character:FindFirstChild("HumanoidRootPart") then
+                    createESP(plr)
+                    local hrp=plr.Character.HumanoidRootPart
+                    local screenPos,onScreen=Camera:WorldToViewportPoint(hrp.Position+Vector3.new(0,3,0))
+                    if onScreen then
+                        local dist=(Camera.CFrame.Position-hrp.Position).Magnitude
+                        local scale=math.clamp(300/dist,0.5,2)
+                        local size=Vector2.new(100,100)*scale
+                        local topLeft=Vector2.new(screenPos.X-size.X/2,screenPos.Y-size.Y/2)
+                        local bottomRight=topLeft+size
+                        local box=ESPBoxes[plr].box
+                        box.PointA=topLeft
+                        box.PointB=Vector2.new(bottomRight.X,topLeft.Y)
+                        box.PointC=bottomRight
+                        box.PointD=Vector2.new(topLeft.X,bottomRight.Y)
+                        box.Visible=true
+
+                        ESPBoxes[plr].name.Position=Vector2.new(screenPos.X,screenPos.Y-60*scale)
+                        ESPBoxes[plr].health.Position=Vector2.new(screenPos.X,screenPos.Y-45*scale)
+                        local hum=plr.Character:FindFirstChildOfClass("Humanoid")
+                        if hum then
+                            ESPBoxes[plr].health.Text=math.floor(hum.Health).."/"..math.floor(hum.MaxHealth)
+                        end
+                    else
+                        ESPBoxes[plr].box.Visible=false
+                        ESPBoxes[plr].name.Visible=false
+                        ESPBoxes[plr].health.Visible=false
+                    end
+                else removeESP(plr) end
+            end
+        end
+
+        -- Kill All
+        if MenuState.killall then
+            for _,plr in pairs(Players:GetPlayers()) do
+                if plr~=player and isEnemy(plr) and plr.Character and plr.Character:FindFirstChild("HumanoidRootPart") then
+                    player.Character.HumanoidRootPart.CFrame=plr.Character.HumanoidRootPart.CFrame*CFrame.new(0,0,3)
+                    if player.Character:FindFirstChildOfClass("Tool") then
+                        player.Character:FindFirstChildOfClass("Tool"):Activate()
+                    end
+                end
+            end
+        end
+
+        -- Rapid Fire
+        if MenuState.rapidfire and tick()-rapidFireLast>=MenuState.rapidFireDelay then
+            rapidFireLast=tick()
+            if player.Character:FindFirstChildOfClass("Tool") then
+                player.Character:FindFirstChildOfClass("Tool"):Activate()
+            end
+        end
+    end)
+
+    --// Header Drag
+    local dragging=false
+    local dragInput, mousePos, framePos
+    Header.InputBegan:Connect(function(input)
+        if input.UserInputType==Enum.UserInputType.MouseButton1 then
+            dragging=true
+            mousePos=UserInputService:GetMouseLocation()
+            framePos=MainFrame.Position
+            input.Changed:Connect(function()
+                if input.UserInputState==Enum.UserInputState.End then dragging=false end
+            end)
+        end
+    end)
+    Header.InputChanged:Connect(function(input)
+        if input.UserInputType==Enum.UserInputType.MouseMovement then
+            dragInput=input
+        end
+    end)
+    UserInputService.InputChanged:Connect(function(input)
+        if input==dragInput and dragging then
+            local delta=UserInputService:GetMouseLocation()-mousePos
+            MainFrame.Position=UDim2.new(
+                framePos.X.Scale,framePos.X.Offset+delta.X,
+                framePos.Y.Scale,framePos.Y.Offset+delta.Y
+            )
+        end
+    end)
+
+    --// Close with Right Ctrl
+    UserInputService.InputBegan:Connect(function(input)
+        if input.KeyCode==Enum.KeyCode.RightControl then
+            ScreenGui:Destroy()
+        end
+    end)
+end
+
+-- Key Button
+KeyButton.MouseButton1Click:Connect(function()
+    local key=KeyBox.Text
+    if VALID_KEYS[key] then
+        KeyLabel.Text="Valid Key!"
+        loadMainMenu()
     else
-        Feedback.TextColor3 = Color3.fromRGB(255,0,0)
-        Feedback.Text = "Invalid Key!"
+        KeyLabel.Text="Invalid Key!"
     end
 end)
