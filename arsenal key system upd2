@@ -19,130 +19,7 @@ local MenuState = {
     aimbotPart = "Head"
 }
 
---// GUI
-local player = game.Players.LocalPlayer
-local ScreenGui = Instance.new("ScreenGui")
-ScreenGui.Name = "DevonsArsenalMenu"
-ScreenGui.ResetOnSpawn = false
-ScreenGui.Parent = player:WaitForChild("PlayerGui")
-
--- Main Frame
-local MainFrame = Instance.new("Frame")
-MainFrame.Size = UDim2.new(0, 460, 0, 650)
-MainFrame.Position = UDim2.new(0.5, -230, 0.5, -325)
-MainFrame.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
-MainFrame.BorderSizePixel = 0
-MainFrame.Active = true
-MainFrame.Parent = ScreenGui
-
-local MainCorner = Instance.new("UICorner")
-MainCorner.CornerRadius = UDim.new(0, 20)
-MainCorner.Parent = MainFrame
-
--- Drop Shadow
-local Shadow = Instance.new("Frame")
-Shadow.Size = UDim2.new(1, 20, 1, 20)
-Shadow.Position = UDim2.new(0, -10, 0, -10)
-Shadow.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
-Shadow.BackgroundTransparency = 0.85
-Shadow.BorderSizePixel = 0
-Shadow.ZIndex = 0
-Shadow.Parent = MainFrame
-
-local ShadowCorner = Instance.new("UICorner")
-ShadowCorner.CornerRadius = MainCorner.CornerRadius
-ShadowCorner.Parent = Shadow
-
--- Header
-local Header = Instance.new("Frame")
-Header.Size = UDim2.new(1, 0, 0, 70)
-Header.Position = UDim2.new(0, 0, 0, 0)
-Header.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
-Header.BorderSizePixel = 0
-Header.Parent = MainFrame
-
-local HeaderCorner = Instance.new("UICorner")
-HeaderCorner.CornerRadius = UDim.new(0, 20)
-HeaderCorner.Parent = Header
-
--- Header Gradient
-local HeaderGradient = Instance.new("UIGradient")
-HeaderGradient.Color = ColorSequence.new{
-    ColorSequenceKeypoint.new(0, Color3.fromRGB(80, 80, 80)),
-    ColorSequenceKeypoint.new(1, Color3.fromRGB(50, 50, 50))
-}
-HeaderGradient.Rotation = 90
-HeaderGradient.Parent = Header
-
--- Header Text
-local HeaderLabel = Instance.new("TextLabel")
-HeaderLabel.Size = UDim2.new(1, -70, 1, 0)
-HeaderLabel.Position = UDim2.new(0, 20, 0, 0)
-HeaderLabel.BackgroundTransparency = 1
-HeaderLabel.Text = "Devons Arsenal Menu (v16)"
-HeaderLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
-HeaderLabel.Font = Enum.Font.GothamBold
-HeaderLabel.TextSize = 28
-HeaderLabel.TextXAlignment = Enum.TextXAlignment.Left
-HeaderLabel.Parent = Header
-
--- Header Image
-local HeaderImage = Instance.new("ImageLabel")
-HeaderImage.Size = UDim2.new(0, 50, 0, 50)
-HeaderImage.Position = UDim2.new(1, -60, 0, 10)
-HeaderImage.BackgroundTransparency = 1
-HeaderImage.Image = "rbxassetid://101455013322456"
-HeaderImage.Parent = Header
-
--- Content Frame
-local ContentFrame = Instance.new("Frame")
-ContentFrame.Size = UDim2.new(1, -40, 1, -90)
-ContentFrame.Position = UDim2.new(0, 20, 0, 80)
-ContentFrame.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
-ContentFrame.BorderSizePixel = 0
-ContentFrame.Parent = MainFrame
-
-local ContentCorner = Instance.new("UICorner")
-ContentCorner.CornerRadius = UDim.new(0, 15)
-ContentCorner.Parent = ContentFrame
-
--- Content Gradient
-local ContentGradient = Instance.new("UIGradient")
-ContentGradient.Color = ColorSequence.new{
-    ColorSequenceKeypoint.new(0, Color3.fromRGB(40, 40, 40)),
-    ColorSequenceKeypoint.new(1, Color3.fromRGB(30, 30, 30))
-}
-ContentGradient.Rotation = 90
-ContentGradient.Parent = ContentFrame
-
--- Subtle Hover Animation Function
-local function addHoverEffect(frame)
-    frame.MouseEnter:Connect(function()
-        frame:TweenSize(UDim2.new(frame.Size.X.Scale, frame.Size.X.Offset + 10, frame.Size.Y.Scale, frame.Size.Y.Offset + 10), Enum.EasingDirection.Out, Enum.EasingStyle.Quad, 0.15, true)
-    end)
-    frame.MouseLeave:Connect(function()
-        frame:TweenSize(UDim2.new(frame.Size.X.Scale, frame.Size.X.Offset - 10, frame.Size.Y.Scale, frame.Size.Y.Offset - 10), Enum.EasingDirection.Out, Enum.EasingStyle.Quad, 0.15, true)
-    end)
-end
-
--- Example Button
-local Button = Instance.new("TextButton")
-Button.Size = UDim2.new(0, 200, 0, 50)
-Button.Position = UDim2.new(0.5, -100, 0.5, -25)
-Button.BackgroundColor3 = Color3.fromRGB(70, 70, 70)
-Button.TextColor3 = Color3.fromRGB(255, 255, 255)
-Button.Font = Enum.Font.GothamBold
-Button.TextSize = 22
-Button.Text = "Example Button"
-Button.Parent = ContentFrame
-
-local ButtonCorner = Instance.new("UICorner")
-ButtonCorner.CornerRadius = UDim.new(0, 12)
-ButtonCorner.Parent = Button
-
-addHoverEffect(Button)
-
---// Simple Key System
+--// Key System
 local keyGui = Instance.new("ScreenGui", player.PlayerGui)
 keyGui.Name = "KeySystem"
 
@@ -200,53 +77,43 @@ enterButton.MouseButton1Click:Connect(function()
     end
 end)
 
---// Sliders
-local function createSlider(name, yPos, min, max, valueRef)
-    local sliderLabel = Instance.new("TextLabel")
-    sliderLabel.Size = UDim2.new(0.8,0,0,20)
-    sliderLabel.Position = UDim2.new(0.1,0,0,yPos)
-    sliderLabel.BackgroundTransparency = 1
-    sliderLabel.TextColor3 = Color3.fromRGB(255,255,255)
-    sliderLabel.Font = Enum.Font.Gotham
-    sliderLabel.TextSize = 16
-    sliderLabel.Text = name.." "..math.floor(valueRef[1])
-    sliderLabel.Parent = MainFrame
+--// Main Menu GUI
+local ScreenGui = Instance.new("ScreenGui", player:WaitForChild("PlayerGui"))
+ScreenGui.Name = "DevonsArsenalMenu"
 
-    local slider = Instance.new("Frame")
-    slider.Size = UDim2.new(0.8,0,0,10)
-    slider.Position = UDim2.new(0.1,0,0,yPos+20)
-    slider.BackgroundColor3 = Color3.fromRGB(100,100,100)
-    slider.Parent = MainFrame
+local MainFrame = Instance.new("Frame")
+MainFrame.Size = UDim2.new(0,460,0,650)
+MainFrame.Position = UDim2.new(0.5,-230,0.5,-325)
+MainFrame.BackgroundColor3 = Color3.fromRGB(30,30,30)
+MainFrame.BorderSizePixel = 0
+MainFrame.Active = true
+MainFrame.Parent = ScreenGui
 
-    local fill = Instance.new("Frame")
-    fill.Size = UDim2.new((valueRef[1]-min)/(max-min),0,1,0)
-    fill.BackgroundColor3 = Color3.fromRGB(0,200,0)
-    fill.Parent = slider
+local UICornerMain = Instance.new("UICorner")
+UICornerMain.CornerRadius = UDim.new(0, 12)
+UICornerMain.Parent = MainFrame
 
-    local dragging = false
-    slider.InputBegan:Connect(function(input)
-        if input.UserInputType == Enum.UserInputType.MouseButton1 then
-            dragging = true
-        end
-    end)
-    slider.InputEnded:Connect(function(input)
-        if input.UserInputType == Enum.UserInputType.MouseButton1 then
-            dragging = false
-        end
-    end)
-    UserInputService.InputChanged:Connect(function(input)
-        if dragging and input.UserInputType == Enum.UserInputType.MouseMovement then
-            local relative = math.clamp((input.Position.X - slider.AbsolutePosition.X)/slider.AbsoluteSize.X,0,1)
-            fill.Size = UDim2.new(relative,0,1,0)
-            valueRef[1] = min + (max-min)*relative
-            sliderLabel.Text = name.." "..math.floor(valueRef[1])
-        end
-    end)
-end
+local Header = Instance.new("TextLabel")
+Header.Size = UDim2.new(1,0,0,60)
+Header.Position = UDim2.new(0,0,0,0)
+Header.BackgroundColor3 = Color3.fromRGB(55,55,55)
+Header.BorderSizePixel = 0
+Header.Text = "Devons Arsenal Menu (v12)"
+Header.TextColor3 = Color3.fromRGB(255,255,255)
+Header.Font = Enum.Font.GothamBold
+Header.TextSize = 26
+Header.Parent = MainFrame
 
-createSlider("Aimbot FOV", 500, 50, 500, {MenuState.aimbotFOV})
-createSlider("Hitbox Size", 550, 5, 20, {MenuState.hitboxSize})
-createSlider("Rapid Fire Delay", 600, 0.01, 0.5, {MenuState.rapidFireDelay})
+local UICornerHeader = Instance.new("UICorner")
+UICornerHeader.CornerRadius = UDim.new(0,12)
+UICornerHeader.Parent = Header
+
+local HeaderImage = Instance.new("ImageLabel")
+HeaderImage.Size = UDim2.new(0,40,0,40)
+HeaderImage.Position = UDim2.new(1,-50,0,10)
+HeaderImage.BackgroundTransparency = 1
+HeaderImage.Image = "rbxassetid://101270819539963"
+HeaderImage.Parent = Header
 
 --// Buttons
 local function createButton(name, yPos, stateKey)
@@ -296,7 +163,76 @@ PartToggle.MouseButton1Click:Connect(function()
     PartToggle.Text = MenuState.aimbotPart
 end)
 
--- Drag Header
+--// Sliders
+local function createSlider(name, yPos, min, max, valueRef)
+    local sliderLabel = Instance.new("TextLabel")
+    sliderLabel.Size = UDim2.new(0.8,0,0,20)
+    sliderLabel.Position = UDim2.new(0.1,0,0,yPos)
+    sliderLabel.BackgroundTransparency = 1
+    sliderLabel.TextColor3 = Color3.fromRGB(255,255,255)
+    sliderLabel.Font = Enum.Font.Gotham
+    sliderLabel.TextSize = 16
+    sliderLabel.Text = name.." "..math.floor(valueRef[1])
+    sliderLabel.Parent = MainFrame
+
+    local slider = Instance.new("Frame")
+    slider.Size = UDim2.new(0.8,0,0,10)
+    slider.Position = UDim2.new(0.1,0,0,yPos+20)
+    slider.BackgroundColor3 = Color3.fromRGB(100,100,100)
+    slider.Parent = MainFrame
+
+    local fill = Instance.new("Frame")
+    fill.Size = UDim2.new((valueRef[1]-min)/(max-min),0,1,0)
+    fill.BackgroundColor3 = Color3.fromRGB(0,200,0)
+    fill.Parent = slider
+
+    local dragging = false
+    slider.InputBegan:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.MouseButton1 then
+            dragging = true
+        end
+    end)
+    slider.InputEnded:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.MouseButton1 then
+            dragging = false
+        end
+    end)
+    UserInputService.InputChanged:Connect(function(input)
+        if dragging and input.UserInputType == Enum.UserInputType.MouseMovement then
+            local relative = math.clamp((input.Position.X - slider.AbsolutePosition.X)/slider.AbsoluteSize.X,0,1)
+            fill.Size = UDim2.new(relative,0,1,0)
+            valueRef[1] = min + (max-min)*relative
+            sliderLabel.Text = name.." "..math.floor(valueRef[1])
+        end
+    end)
+end
+
+createSlider("Aimbot FOV", 500, 50, 1000, {MenuState.aimbotFOV})
+createSlider("Hitbox Size", 540, 2, 20, {MenuState.hitboxSize})
+createSlider("Rapid Fire Delay", 580, 0.01, 0.5, {MenuState.rapidFireDelay})
+
+--// FOV Circle
+local fovCircle
+local function updateFOVCircle()
+    if MenuState.showFOV then
+        if not fovCircle then
+            fovCircle = Drawing.new("Circle")
+            fovCircle.Color = Color3.fromRGB(0,255,0)
+            fovCircle.Thickness = 2
+            fovCircle.NumSides = 100
+            fovCircle.Filled = false
+            fovCircle.Visible = true
+        end
+        local mousePos = UserInputService:GetMouseLocation()
+        fovCircle.Position = Vector2.new(mousePos.X, mousePos.Y)
+        fovCircle.Radius = MenuState.aimbotFOV
+    elseif fovCircle then
+        fovCircle:Remove()
+        fovCircle = nil
+    end
+end
+
+--// Draggable Header
 local dragging = false
 local dragInput, mousePos, framePos
 Header.InputBegan:Connect(function(input)
@@ -321,6 +257,7 @@ RunService.RenderStepped:Connect(function()
         local delta = dragInput.Position - mousePos
         MainFrame.Position = framePos + UDim2.new(0, delta.X, 0, delta.Y)
     end
+    updateFOVCircle()
 end)
 
 -- Right Ctrl toggle
@@ -331,30 +268,9 @@ UserInputService.InputBegan:Connect(function(input, gpe)
     end
 end)
 
--- FOV Circle
-local fovCircle
-local function updateFOVCircle()
-    if MenuState.showFOV then
-        if not fovCircle then
-            fovCircle = Drawing.new("Circle")
-            fovCircle.Color = Color3.fromRGB(0,255,0)
-            fovCircle.Thickness = 2
-            fovCircle.NumSides = 100
-            fovCircle.Filled = false
-            fovCircle.Visible = true
-        end
-        local mousePos = UserInputService:GetMouseLocation()
-        fovCircle.Position = Vector2.new(mousePos.X, mousePos.Y)
-        fovCircle.Radius = MenuState.aimbotFOV
-    elseif fovCircle then
-        fovCircle:Remove()
-        fovCircle = nil
-    end
-end
-
--- Utility: Get closest target
+--// Utilities
 local function isEnemy(plr)
-    return true -- Replace with your team check logic if needed
+    return plr.Team ~= player.Team
 end
 
 local function getClosestVisibleTarget()
@@ -375,11 +291,9 @@ local function getClosestVisibleTarget()
     return closest
 end
 
--- Cheats logic
+--// Cheats Logic
 local rapidFireLast = 0
 RunService.RenderStepped:Connect(function()
-    updateFOVCircle()
-
     -- Aimbot
     if MenuState.aimbot and UserInputService:IsMouseButtonPressed(Enum.UserInputType.MouseButton2) then
         local targetPart = getClosestVisibleTarget()
@@ -449,13 +363,12 @@ RunService.RenderStepped:Connect(function()
                 local espText = hrp.ESP:FindFirstChildOfClass("TextLabel")
                 if espText and player.Character and player.Character:FindFirstChild("HumanoidRootPart") then
                     local dist = (player.Character.HumanoidRootPart.Position - hrp.Position).Magnitude
-                    local color = Color3.fromHSV(math.clamp(dist/1000,0,1)/3,1,1)
-                    espText.TextColor3 = color
+                    espText.TextColor3 = Color3.fromRGB(255,0,0)
                     espText.Text = plr.Name.." ["..math.floor(dist).."m]"
                 end
             end
         elseif plr.Character and plr.Character:FindFirstChild("HumanoidRootPart") then
-            local hrp = plr.Character:FindFirstChild("HumanoidRootPart")
+            local hrp = plr.Character.HumanoidRootPart
             if hrp:FindFirstChild("ESP") then
                 hrp.ESP:Destroy()
             end
