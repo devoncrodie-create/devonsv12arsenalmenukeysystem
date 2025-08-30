@@ -85,6 +85,7 @@ local function loadMenu()
     UICornerMain.CornerRadius = UDim.new(0, 12)
     UICornerMain.Parent = MainFrame
 
+    -- Header
     local Header = Instance.new("Frame")
     Header.Size = UDim2.new(1,0,0,60)
     Header.Position = UDim2.new(0,0,0,0)
@@ -102,12 +103,14 @@ local function loadMenu()
     HeaderTitle.TextSize = 26
     HeaderTitle.Parent = Header
 
+    -- Header Image
     local HeaderImage = Instance.new("ImageLabel")
     HeaderImage.Size = UDim2.new(0,40,0,40)
-    HeaderImage.Position = UDim2.new(1,-50,0,10)
+    HeaderImage.Position = UDim2.new(1,-50,0.5,-20)
     HeaderImage.BackgroundTransparency = 1
-    HeaderImage.Image = "rbxassetid://101270819539963"
+    HeaderImage.Image = "rbxassetid://105378501123309"
     HeaderImage.Parent = Header
+    HeaderImage.ZIndex = 2
 
     -- Buttons
     local function createButton(name, yPos, stateKey)
@@ -158,12 +161,12 @@ local function loadMenu()
     end)
 
     -- Sliders
-    local function createSlider(name, yPos, min, max, stateRef)
+    local function createSlider(name, yPos, min, max, stateKey)
         local SliderLabel = Instance.new("TextLabel")
         SliderLabel.Size = UDim2.new(0.8,0,0,25)
         SliderLabel.Position = UDim2.new(0.1,0,0,yPos)
         SliderLabel.BackgroundTransparency = 1
-        SliderLabel.Text = name..": "..stateRef[1]
+        SliderLabel.Text = name..": "..MenuState[stateKey]
         SliderLabel.TextColor3 = Color3.fromRGB(255,165,0)
         SliderLabel.Font = Enum.Font.Gotham
         SliderLabel.TextSize = 18
@@ -181,7 +184,7 @@ local function loadMenu()
         UICorner.Parent = SliderFrame
 
         local Dragger = Instance.new("Frame")
-        Dragger.Size = UDim2.new(0,10,1,0)
+        Dragger.Size = UDim2.new((MenuState[stateKey]-min)/(max-min),1,1,0)
         Dragger.BackgroundColor3 = Color3.fromRGB(255,0,0)
         Dragger.BorderSizePixel = 0
         Dragger.Parent = SliderFrame
@@ -200,38 +203,18 @@ local function loadMenu()
         UserInputService.InputChanged:Connect(function(input)
             if dragging and input.UserInputType == Enum.UserInputType.MouseMovement then
                 local pos = math.clamp(input.Position.X - SliderFrame.AbsolutePosition.X, 0, SliderFrame.AbsoluteSize.X)
-                Dragger.Position = UDim2.new(0,pos-5,0,0)
                 local value = min + (max-min)*(pos/SliderFrame.AbsoluteSize.X)
-                stateRef[1] = math.floor(value*100)/100
-                SliderLabel.Text = name..": "..math.floor(value*100)/100
+                MenuState[stateKey] = math.floor(value*100)/100
+                SliderLabel.Text = name..": "..MenuState[stateKey]
+                Dragger.Size = UDim2.new(pos/SliderFrame.AbsoluteSize.X,0,1,0)
             end
         end)
     end
 
-    createSlider("Aimbot FOV", 500, 50, 500, {MenuState.aimbotFOV})
-    createSlider("Hitbox Size", 540, 2, 20, {MenuState.hitboxSize})
-    createSlider("Rapid Fire Delay", 580, 0.01, 0.5, {MenuState.rapidFireDelay})
-
-    -- FOV Circle
-    local fovCircle
-    local function updateFOVCircle()
-        if MenuState.showFOV then
-            if not fovCircle then
-                fovCircle = Drawing.new("Circle")
-                fovCircle.Color = Color3.fromRGB(0,255,0)
-                fovCircle.Thickness = 2
-                fovCircle.NumSides = 100
-                fovCircle.Filled = false
-                fovCircle.Visible = true
-            end
-            local mousePos = UserInputService:GetMouseLocation()
-            fovCircle.Position = Vector2.new(mousePos.X, mousePos.Y)
-            fovCircle.Radius = MenuState.aimbotFOV
-        elseif fovCircle then
-            fovCircle:Remove()
-            fovCircle = nil
-        end
-    end
+    -- Slider calls
+    createSlider("Aimbot FOV", 500, 50, 500, "aimbotFOV")
+    createSlider("Hitbox Size", 540, 2, 20, "hitboxSize")
+    createSlider("Rapid Fire Delay", 580, 0.01, 0.5, "rapidFireDelay")
 
     -- Drag Header
     local dragging = false
@@ -258,7 +241,6 @@ local function loadMenu()
             local delta = dragInput.Position - mousePos
             MainFrame.Position = framePos + UDim2.new(0, delta.X, 0, delta.Y)
         end
-        updateFOVCircle()
     end)
 
     -- Right Ctrl toggle
@@ -269,7 +251,7 @@ local function loadMenu()
         end
     end)
 
-    -- Utilities
+    --=== CHEATS ===
     local function isEnemy(plr)
         return plr.Team ~= player.Team
     end
@@ -292,8 +274,8 @@ local function loadMenu()
         return closest
     end
 
-    -- Cheats
     local rapidFireLast = 0
+    local fovCircle
     RunService.RenderStepped:Connect(function()
         -- Aimbot
         if MenuState.aimbot and UserInputService:IsMouseButtonPressed(Enum.UserInputType.MouseButton2) then
@@ -357,7 +339,6 @@ local function loadMenu()
                 end
             end
         else
-            -- Remove ESP
             for _,plr in pairs(Players:GetPlayers()) do
                 if plr.Character then
                     for _,part in pairs(plr.Character:GetChildren()) do
@@ -367,6 +348,24 @@ local function loadMenu()
                     end
                 end
             end
+        end
+
+        -- FOV Circle
+        if MenuState.showFOV then
+            if not fovCircle then
+                fovCircle = Drawing.new("Circle")
+                fovCircle.Color = Color3.fromRGB(0,255,0)
+                fovCircle.Thickness = 2
+                fovCircle.NumSides = 100
+                fovCircle.Filled = false
+                fovCircle.Visible = true
+            end
+            local mousePos = UserInputService:GetMouseLocation()
+            fovCircle.Position = Vector2.new(mousePos.X, mousePos.Y)
+            fovCircle.Radius = MenuState.aimbotFOV
+        elseif fovCircle then
+            fovCircle:Remove()
+            fovCircle = nil
         end
     end)
 end
